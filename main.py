@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DOWNLOAD_FOLDER = "/sdcard/Download"  # Android gallery path
+DOWNLOAD_FOLDER = "downloads"  # Folder for downloaded videos on Render
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 @app.post("/download")
