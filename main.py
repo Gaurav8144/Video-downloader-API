@@ -7,6 +7,7 @@ import subprocess
 
 app = FastAPI()
 
+# CORS allow all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,7 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DOWNLOAD_FOLDER = "downloads"  # Folder for downloaded videos on Render
+# Folder where videos will be saved
+DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 @app.post("/download")
@@ -35,6 +37,9 @@ async def download_video(request: Request):
 
         subprocess.run(cmd, check=True)
         return {"status": "success", "file_url": f"https://video-downloader-zqcn.onrender.com/video/{filename}"}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.get("/video/{filename}")
 async def serve_video(filename: str):
