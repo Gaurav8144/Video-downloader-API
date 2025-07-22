@@ -34,9 +34,7 @@ async def download_video(request: Request):
         ]
 
         subprocess.run(cmd, check=True)
-        return {"status": "success", "file_url": f"http://localhost:8000/video/{filename}"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return {"status": "success", "file_url": f"https://video-downloader-zqcn.onrender.com/video/{filename}"}
 
 @app.get("/video/{filename}")
 async def serve_video(filename: str):
