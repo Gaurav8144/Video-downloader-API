@@ -7,7 +7,7 @@ import subprocess
 
 app = FastAPI()
 
-# CORS allow all origins
+# Allow all CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Folder where videos will be saved
+# Correct downloads folder for Render
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
