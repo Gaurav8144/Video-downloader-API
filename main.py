@@ -7,7 +7,7 @@ import subprocess
 
 app = FastAPI()
 
-# Allow all CORS
+# CORS settings (Allow everything)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,7 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Correct downloads folder for Render
+# Correct path for Render (DO NOT use /sdcard)
 DOWNLOAD_FOLDER = "downloads"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
@@ -23,11 +23,12 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 async def download_video(request: Request):
     data = await request.json()
     video_url = data.get("url")
-    
+
     try:
         filename = f"{uuid.uuid4()}.mp4"
         filepath = os.path.join(DOWNLOAD_FOLDER, filename)
 
+        # yt-dlp command to download
         cmd = [
             "yt-dlp",
             "-f", "mp4",
@@ -36,7 +37,11 @@ async def download_video(request: Request):
         ]
 
         subprocess.run(cmd, check=True)
-        return {"status": "success", "file_url": f"https://video-downloader-zqcn.onrender.com/video/{filename}"}
+
+        return {
+            "status": "success",
+            "file_url": f"https://video-downloader-zqcn.onrender.com/video/{filename}"
+        }
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -44,4 +49,6 @@ async def download_video(request: Request):
 @app.get("/video/{filename}")
 async def serve_video(filename: str):
     filepath = os.path.join(DOWNLOAD_FOLDER, filename)
-    return FileResponse(filepath, media_type="video/mp4", filename=filename)
+    if os.path.exists(filepath):
+        return FileResponse(filepath, media_type="video/mp4", filename=filename)
+    return {"error": "File not found"}
