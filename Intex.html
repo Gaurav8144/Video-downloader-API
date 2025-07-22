@@ -22,7 +22,7 @@
       const msg = document.getElementById("message");
       msg.innerHTML = "Processing your link...";
       try {
-        const res = await fetch("http://localhost:8000/download", {
+        const res = await fetch("https://video-downloader-zycn.onrender.com/download", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url })
