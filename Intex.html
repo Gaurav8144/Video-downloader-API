@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All-in-One Video Downloader</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 100px; background-color: #f0f0f0; }
+    input { padding: 10px; width: 60%; font-size: 16px; border-radius: 5px; border: 1px solid #aaa; }
+    button { padding: 10px 20px; font-size: 16px; background-color: green; color: white; border: none; border-radius: 5px; margin-left: 10px; }
+    button:hover { background-color: darkgreen; }
+    .msg { margin-top: 20px; font-size: 18px; color: #333; }
+  </style>
+</head>
+<body>
+  <h1>All-in-One Video Downloader</h1>
+  <input type="text" id="videoLink" placeholder="Paste any video link (Instagram, YouTube, etc.)" />
+  <button onclick="downloadVideo()">Download</button>
+  <div class="msg" id="message"></div>
+
+  <script>
+    async function downloadVideo() {
+      const url = document.getElementById("videoLink").value;
+      const msg = document.getElementById("message");
+      msg.innerHTML = "Processing your link...";
+      try {
+        const res = await fetch("http://localhost:8000/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (data.status === "success") {
+          msg.innerHTML = "Download started successfully!";
+          const a = document.createElement("a");
+          a.href = data.file_url;
+          a.download = "";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else {
+          msg.innerHTML = "Error: " + data.message;
+        }
+      } catch (err) {
+        msg.innerHTML = "Something went wrong.";
+      }
+    }
+  </script>
+</body>
+</html>
